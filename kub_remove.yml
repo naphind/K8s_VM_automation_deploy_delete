@@ -1,0 +1,6 @@
+---
+
+- hosts: all,!localhost
+  tasks:
+    - name: Remove Kube Shit
+      shell: docker rm -fv $(docker ps -a -q) ;docker volume rm -f $(docker volume ls); rm -rf /run/secrets/kubernetes.io; rm -rf /var/lib/etcd; rm -rf /var/lib/kubelet; rm -rf /var/lib/rancher; rm -rf /etc/kubernetes ; docker volume rm -f $(docker volume ls) ; reboot -h now

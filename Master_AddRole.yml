@@ -1,0 +1,19 @@
+---
+
+- hosts: master,infra
+  vars_files: vars/vars.yml
+  tasks:
+    - name: copy add_role script on client
+      template: 
+        src: scripts/master_addrole.sh
+        dest: /home/rancher 
+        owner: root 
+        group: root 
+        mode: 0777
+
+    - name:  Add role into Cluster
+      shell: bash /home/rancher/master_addrole.sh                         
+
+    - name:  Deployment of kubernetes pods
+      shell: chmod 755 /tmp/pods.sh;sh /tmp/pods.sh
+

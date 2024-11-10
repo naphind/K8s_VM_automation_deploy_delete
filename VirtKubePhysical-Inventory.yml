@@ -1,0 +1,42 @@
+---
+
+- hosts: localhost
+  vars_files:
+     - vars/vars.yml
+  gather_facts: true
+  remote_user: root
+  tasks:
+
+    - name: Extract Physical machine1 IP
+      shell: cat /tmp/DetailsFromKS | grep -w "{{ pm1_ILO_IP }}" | awk '{print $2}' | sort -u
+      register: pm1Ip
+
+    - name: Set Physical machine1 IP
+      set_fact:
+        pm1: "{{ pm1Ip.stdout }}"
+
+    - name: Extract Physical machine2 IP
+      shell: cat /tmp/DetailsFromKS | grep -w "{{ pm2_ILO_IP }}" | awk '{print $2}' | sort -u
+      register: pm2Ip
+
+    - name: Set Physical machine2 IP
+      set_fact:
+        pm2: "{{ pm2Ip.stdout }}"
+
+
+    - name: Extract Physical machine3  IP
+      shell: cat /tmp/DetailsFromKS | grep -w "{{ pm3_ILO_IP }}" | awk '{print $2}' | sort -u
+      register: pm3Ip
+
+    - name: Set PM-3 IP
+      set_fact:
+        pm3: "{{ pm3Ip.stdout }}"
+
+    - name: Create Inventory
+      template:
+        src: templates/VirtualKubeInventory
+        dest: /tmp/Virtual_KubeBase_Inventory
+
+    - name: Import Inventory for Kubernetes in AWX
+      shell: awx-manage inventory_import --source=/tmp/Virtual_KubeBase_Inventory --inventory-name="Virtual-Kube_Initial-Inventory" 
+

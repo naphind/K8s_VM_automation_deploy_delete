@@ -1,0 +1,8 @@
+[master2]
+{{ master2_ip }} IP=172.16.1.217 hostname=pvirtkubmtr02.uidai.demo
+
+[infra2]
+{{ infra2_ip }} IP=172.16.1.220 hostname=pvirtkubifr02.uidai.demo
+
+[worker2]
+{{ worker2_ip }} IP=172.16.1.222 hostname=pvirtkubwrk02.uidai.demo

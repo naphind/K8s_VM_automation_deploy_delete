@@ -1,0 +1,6 @@
+[test]
+
+#172.16.1.60 bond1_ip1=172.16.4.60 bond2_ip2=172.16.3.227  hostname=pvirtkubhost01.uidai.demo
+172.16.1.61 bond1_ip1=172.16.4.61 bond2_ip2=172.16.3.228  hostname=pvirtkubhost02.uidai.demo
+#172.16.1.74 bond1_ip1=172.16.4.74 bond2_ip2=172.16.3.229 hostname=pvirtkubhost03.uidai.demo
+

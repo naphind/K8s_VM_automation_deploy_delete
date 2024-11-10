@@ -1,0 +1,48 @@
+
+- import_playbook: CreateVMs.yml
+
+- hosts: localhost
+  remote_user: root
+  tasks:
+    - name: Pause
+      pause:
+        seconds: 1000 
+
+- import_playbook: Start-allVMs.yml
+
+- import_playbook: ExtractVmIP.yml 
+
+- import_playbook: Set-NetworkConf.yml 
+
+
+
+- import_playbook: common.yml
+
+- import_playbook: RegisterCluster.yml
+
+- hosts: all,!localhost
+  tasks:
+    - name: Copy Cluster ID
+      template:
+        src: /tmp/clusterid.txt
+        dest: /tmp/clusterid.txt 
+
+
+- import_playbook: Master_AddRole.yml 
+
+- hosts: master1
+  tasks:
+    - name: Fetch Script for Worker
+      fetch:
+        src: /tmp/pods.sh
+        dest: /tmp/worker_addrole.sh
+        flat: yes
+
+- hosts: localhost
+  tasks:
+    - name: Modifying Worker Script
+      shell: sed -i 's/--etcd --controlplane/--worker/g' /tmp/worker_addrole.sh
+
+
+- import_playbook: Worker_AddRole.yml
+

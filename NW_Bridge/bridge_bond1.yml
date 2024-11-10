@@ -1,0 +1,35 @@
+---
+
+- hosts: all,!localhost
+  remote_user: root
+  gather_facts: true
+  tasks:
+
+    - name: Configure Interface on provisioning network
+      copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-bond1"
+         content: |
+                DEVICE=bond1
+                USERCTL=no
+                BOOTPROTO=static
+                TYPE=Ethernet
+                BONDING_MASTER=yes
+                BONDING_OPTS="mode=4 miimon=100 bond-lacp-rate=slow"
+                NM_CONTROLLED=no
+                BRIDGE=br1-bond1
+
+    - name: Configure Bridge on provisoning network
+      copy:
+        dest: "/etc/sysconfig/network-scripts/ifcfg-br1-bond1"
+        content: |
+                DEVICE=br1-bond1
+                TYPE=Bridge
+                IPADDR={{ bond1_ip1 }}
+                NETMASK=255.255.255.0
+                ONBOOT=yes
+                BOOTPROTO=none
+                NM_CONTROLLED=no
+                DELAY=0
+
+
+                            

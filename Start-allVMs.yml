@@ -1,0 +1,33 @@
+---
+
+- hosts: kvm1
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:  
+    - name: Start vm
+      virt:
+        name: "{{ item.key }}"
+        state: running
+      with_dict: "{{ host1_machines }}"
+
+- hosts: kvm2
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:
+    - name: Start vm
+      virt:
+        name: "{{ item.key }}"
+        state: running
+      with_dict: "{{ host2_machines }}"
+
+- hosts: kvm3
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:
+    - name: Start vm
+      virt:
+        name: "{{ item.key }}"
+        state: running
+      with_dict: "{{ host3_machines }}"
+
+

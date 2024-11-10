@@ -1,0 +1,40 @@
+--- 
+
+- hosts: master1
+  vars_files: vars/vars.yml
+  tasks:
+      - name: copy create cluster into rancher script on client
+        template: 
+          src: scripts/master1_cluster.sh 
+          dest: /home/rancher 
+          owner: root 
+          group: root 
+          mode: 0777
+
+      - name: copy create cluster into rancher script on client
+        template:
+          src: scripts/master1_registercluster.sh
+          dest: /home/rancher
+          owner: root
+          group: root
+          mode: 0777
+
+      - name:  Create Cluster
+        shell: bash /home/rancher/master1_cluster.sh >/tmp/clusterid.txt
+
+      - name:  Register Cluster
+        shell: bash /home/rancher/master1_registercluster.sh >/tmp/registercluster.txt
+
+      - name:  clear role add script on Cluster node
+        shell: rm -rf /tmp/pods.sh
+
+      - name: Fetch Cluster ID
+        fetch:
+          src: /tmp/clusterid.txt
+          dest: /tmp/clusterid.txt
+          flat: yes  
+
+
+
+
+

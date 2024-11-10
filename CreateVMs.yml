@@ -1,0 +1,92 @@
+---
+
+
+- hosts: foreman
+  remote_user: root
+  tasks:
+    - name: Copy Kick Start to perform PXE boot
+      template:
+        src: templates/ks.cfg
+        dest: /tmp/ks.cfg
+        
+    - name: Backup of old KS
+      shell: mv /var/www/html/pub/ks.cfg /var/www/html/pub/ks.cfg_AnsibleORG ; cp /tmp/ks.cfg /var/www/html/pub/ks.cfg
+
+
+- hosts: kvm1
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:
+    - name: Get list of VMs
+      virt:
+        command: "list_vms"
+      register: vms1
+
+    - name: Create Vm
+      command: >
+                virt-install --name {{ item.key }}
+                --memory {{ item.value.mem }} --vcpus {{ item.value.cpus }}
+                --pxe
+                --network {{ item.value.provisioning_nw }} --network {{ item.value.bond_nw }}
+                --disk size={{ item.value.disk_size }}               
+                --noautoconsole --os-variant {{ item.value.os_type }}
+      when: item.key not in vms1.list_vms
+      with_dict: "{{ host1_machines }}"
+
+    - name: List all the VMs
+      virt:
+        command: list_vms
+      register: all_vms1
+    
+
+- hosts: kvm2
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:
+    - name: Get list of VMs
+      virt:
+        command: "list_vms"
+      register: vms2
+
+    - name: Create Vm
+      command: >
+                virt-install --name {{ item.key }}
+                --memory {{ item.value.mem }} --vcpus {{ item.value.cpus }}
+                --pxe
+                --network {{ item.value.provisioning_nw }} --network {{ item.value.bond_nw }}
+                --disk size={{ item.value.disk_size }}
+                --noautoconsole --os-variant {{ item.value.os_type }}
+      when: item.key not in vms2.list_vms
+      with_dict: "{{ host2_machines }}"
+
+    - name: List all the VMs
+      virt:
+        command: list_vms
+      register: all_vms2
+
+
+- hosts: kvm3
+  remote_user: root
+  vars_files: vars/vars.yml
+  tasks:
+    - name: Get list of VMs
+      virt:
+        command: "list_vms"
+      register: vms3
+
+    - name: Create Vm
+      command: >
+                virt-install --name {{ item.key }}
+                --memory {{ item.value.mem }} --vcpus {{ item.value.cpus }}
+                --pxe
+                --network {{ item.value.provisioning_nw }} --network {{ item.value.bond_nw }}
+                --disk size={{ item.value.disk_size }}
+                --noautoconsole --os-variant {{ item.value.os_type }}
+      when: item.key not in vms3.list_vms
+      with_dict: "{{ host3_machines }}"
+
+    - name: List all the VMs
+      virt:
+        command: list_vms
+      register: all_vms3
+ 

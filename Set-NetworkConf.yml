@@ -1,0 +1,88 @@
+---
+- hosts: all,!localhost
+  gather_facts: true
+  become: yes
+  tasks:
+    - name: Set hostname
+      shell: hostnamectl set-hostname {{ hostname }}
+
+    - set_fact:
+        target_interface: "{{ item }}"
+      when: >
+        (hostvars[inventory_hostname]['ansible_%s' % item]|default({}))
+        .get('ipv4', {}).get('address') == "{{ ansible_default_ipv4.address }}"
+        or
+        "{{ ansible_default_ipv4.address }}" in ((hostvars[inventory_hostname]['ansible_%s' % item]|default({}))
+        .get('ipv4_secondaries'))|map(attribute='address')|list
+      with_items:
+        - "{{ ansible_interfaces }}"
+
+
+    - name: Configuring Boot proto to static
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'BOOTPROTO'
+        line: 'BOOTPROTO="static"'
+
+    - name: Configuring Static IP
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'IPADDR'
+        line: 'IPADDR={{ IP }}'
+
+    - name: Configuring Gateway IP
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'GATEWAY'
+        line: 'GATEWAY=172.16.1.1'
+
+
+    - name: Configuring DNS
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'NETMASK'
+        line: 'NETMASK=255.255.255.0'
+
+
+    - name: Configuring DNS
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'DNS1'
+        line: 'DNS1=172.16.1.202'
+
+    - name: Configuring DNS
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'DNS2'
+        line: 'DNS2=172.16.1.203'
+
+    - name: Configuring DNS
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'DNS3'
+        line: 'DNS3=172.16.1.204'
+    
+    - name: Configuring DNS
+      lineinfile:
+        path: /etc/sysconfig/network-scripts/ifcfg-{{ target_interface }}
+        state: present
+        regexp: 'DNS4'
+        line: 'DNS4=8.8.8.8'
+
+   
+    - name: Restart network
+      shell: sleep 2 && service network restart
+      async: 1
+      poll: 0
+
+    - name: Pause for service to be up
+      pause:
+        seconds: 60
+

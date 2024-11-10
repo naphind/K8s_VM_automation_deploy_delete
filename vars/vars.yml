@@ -1,0 +1,95 @@
+###### ILO IP of Physical Machines Used #####
+
+pm1_ILO_IP: 172.16.1.110
+
+pm2_ILO_IP: 172.16.1.111
+
+pm3_ILO_IP: 172.16.1.124
+
+
+###### KVM Based Virtual Machine Details ######
+
+host1_machines:
+  Kube-Master01:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Infra01:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Worker01:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+
+
+host2_machines:
+  Kube-Master02:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Infra02:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Worker02:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+
+host3_machines:
+  Kube-Master03:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Worker03:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+  Kube-Worker04:
+    mem: 16000
+    cpus: 8
+    os_type: centos7.0
+    provisioning_nw: "bridge:br0-em1"
+    bond_nw: "bridge:br1-bond1"
+    disk_size: 80
+
+###########################################
+
+rancherurl: https://rancher.uidai.demo
+clustername: uidai-virtualcluster
+token:  token-sspsd:wgntbr5k2gqbqjskfhzbnm2tbvvth65dt7mg87pggh7jvgrxb8972f
+

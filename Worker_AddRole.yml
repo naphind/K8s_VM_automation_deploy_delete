@@ -1,0 +1,16 @@
+---
+
+- hosts: worker
+  vars_files: vars/vars.yml
+  tasks:
+    - name: copy add_role script on client
+      template: 
+        src: /tmp/worker_addrole.sh
+        dest: /tmp/pod.sh 
+        owner: root 
+        group: root 
+        mode: 0777
+
+    - name:  Deployment of kubernetes pods
+      shell: sh /tmp/pod.sh
+

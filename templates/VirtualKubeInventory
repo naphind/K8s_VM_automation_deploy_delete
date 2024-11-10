@@ -1,0 +1,7 @@
+
+[virtualkubernetes]
+
+{{ pm1 }} IP=172.16.1.60 hostname=pvirtkubhost01.uidai.demo
+{{ pm2 }} IP=172.16.1.61 hostname=pvirtkubhost02.uidai.demo
+{{ pm3 }} IP=172.16.1.74 hostname=pvirtkubhost03.uidai.demo
+

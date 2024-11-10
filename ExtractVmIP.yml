@@ -1,0 +1,118 @@
+---
+
+- hosts: kvm1
+  remote_user: root
+  gather_facts: true
+  tasks:
+    - name: Extract Master01 IP
+      shell: virsh domifaddr Kube-Master01 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_master1
+
+    - name: Extract Worker01 IP
+      shell: virsh domifaddr Kube-Worker01 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_worker1
+
+    - name: Extract Infra01 IP
+      shell: virsh domifaddr Kube-Infra01 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_infra1
+
+    - name: Set Facts for KVM1  Nodes
+      set_fact:
+        master1_ip: "{{ kube_master1.stdout }}"
+        infra1_ip: "{{ kube_infra1.stdout }}"
+        worker1_ip: "{{ kube_worker1.stdout }}"
+
+    - name: Using IP Template
+      template:
+        src: templates/Host1
+        dest: /tmp/content1.txt
+    
+    - name: Fetch Content File
+      fetch: 
+        src: /tmp/content1.txt
+        dest: /tmp/content1.txt
+        flat: yes
+
+
+- hosts: kvm2
+  remote_user: root
+  gather_facts: true
+  tasks:
+    - name: Extract Master02 IP
+      shell: virsh domifaddr Kube-Master02 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_master2
+
+    - name: Extract Worker02 IP
+      shell: virsh domifaddr Kube-Worker02 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_worker2
+
+    - name: Extract Infra02 IP
+      shell: virsh domifaddr Kube-Infra02 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_infra2
+
+    - name: Set Facts for KVM2 Nodes
+      set_fact:
+        master2_ip: "{{ kube_master2.stdout }}"
+        infra2_ip: "{{ kube_infra2.stdout }}"
+        worker2_ip: "{{ kube_worker2.stdout }}"
+
+    - name: Using IP Template
+      template:
+        src: templates/Host2
+        dest: /tmp/content2.txt
+
+    - name: Fetch Content File
+      fetch:
+        src: /tmp/content2.txt
+        dest: /tmp/content2.txt
+        flat: yes
+
+
+- hosts: kvm3
+  remote_user: root
+  gather_facts: true
+  tasks:
+    - name: Extract Master03 IP
+      shell: virsh domifaddr Kube-Master03 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_master3
+
+    - name: Extract Worker03 IP
+      shell: virsh domifaddr Kube-Worker03 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_worker3
+
+    - name: Extract Worker04 IP
+      shell: virsh domifaddr Kube-Worker04 --source agent | grep -i eth0 | awk '{print $4}' | cut -d / -f1
+      register: kube_worker4
+
+    - name: Set Facts for KVM3 Nodes
+      set_fact:
+        master3_ip: "{{ kube_master3.stdout }}"
+        worker3_ip: "{{ kube_worker3.stdout }}"
+        worker4_ip: "{{ kube_worker4.stdout }}"
+
+    - name: Using IP Template
+      template:
+        src: templates/Host3
+        dest: /tmp/content3.txt
+
+
+    - name: Fetch Content File
+      fetch:
+        src: /tmp/content3.txt
+        dest: /tmp/content3.txt
+        flat: yes
+
+- hosts: localhost
+  remote_user: root
+  tasks:
+    - name: Create Inventory
+      shell: cat /tmp/content* > /tmp/Inventory ; echo "[all:vars]" >> /tmp/Inventory ; echo "ansible_ssh_user=root" >> /tmp/Inventory ;echo "ansible_ssh_pass=wipro123" >> /tmp/Inventory
+
+    - name: Configure Inventory
+      shell: rm -rf hosts; cp /tmp/Inventory hosts
+
+    - name: Using the New Inventory
+      meta: refresh_inventory
+
+
+

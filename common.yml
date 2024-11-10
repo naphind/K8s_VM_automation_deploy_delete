@@ -1,0 +1,40 @@
+---
+
+- hosts: all,!localhost
+  tasks:
+
+    - name: Register Hosts to Foreman
+      shell:  wget https://172.16.1.200/pub/katello-ca-consumer-latest.noarch.rpm --no-check-certificate ; rpm -ivh katello-ca-consumer-latest.noarch.rpm ; subscription-manager register --org="uidai" --activationkey="mysql" --force
+
+    - name: Prerequisites for docker 
+      yum: 
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2 
+        state: present
+
+    - name: Add repo for docker
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    - name: Install docker 
+      yum: 
+        name:
+          - docker-ce
+          - jq
+          - vim
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: ensure docker is running (and enable it at boot)
+      service: name=docker state=started enabled=yes
+
+    - name: Create directory for Rancher
+      file:
+        path: /home/rancher
+        state: directory
+
+    - name:  clear role add script on Cluster node
+      shell: rm -rf /tmp/pods.sh
+
+

@@ -1,0 +1,33 @@
+---
+
+- hosts: all,!localhost
+  remote_user: root
+  gather_facts: true
+  tasks:
+
+    - name: Configure Interface on provisioning network
+      copy:
+         dest: "/etc/sysconfig/network-scripts/ifcfg-em1"
+         content: |
+                 DEVICE=em1
+                 TYPE=Ethernet
+                 BOOTPROTO=none
+                 ONBOOT=yes
+                 NM_CONTROLLED=no
+                 BRIDGE=br0-em1
+
+    - name: Configure Bridge on provisoning network
+      copy:
+        dest: "/etc/sysconfig/network-scripts/ifcfg-br0-em1"
+        content: |
+                DEVICE=br0-em1
+                TYPE=Bridge
+                IPADDR={{ ansible_default_ipv4.address }}
+                NETMASK=255.255.255.0
+                ONBOOT=yes
+                BOOTPROTO=none
+                NM_CONTROLLED=no
+                DELAY=0
+
+
+                            

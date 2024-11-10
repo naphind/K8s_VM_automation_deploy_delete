@@ -1,0 +1,24 @@
+[all:vars]
+ansible_ssh_user=root
+ansible_ssh_pass=wipro123
+
+
+[master1]
+172.16.1.216    hostname=pvirtkubmtr01.uidai.demo
+
+[master]
+172.16.1.216	hostname=pvirtkubmtr01.uidai.demo
+172.16.1.217	hostname=pvirtkubmtr02.uidai.demo
+172.16.1.218	hostname=pvirtkubmtr03.uidai.demo
+
+
+[infra]
+172.16.1.219	hostname=pvirtkubifr01.uidai.demo
+172.16.1.220	hostname=pvirtkubifr02.uidai.demo
+
+[worker]
+172.16.1.221	hostname=pvirtkubwrk01.uidai.demo
+172.16.1.222	hostname=pvirtkubwrk02.uidai.demo
+172.16.1.223	hostname=pvirtkubwrk03.uidai.demo
+172.16.1.224	hostname=pvirtkubwrk04.uidai.demo
+

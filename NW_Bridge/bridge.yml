@@ -1,0 +1,24 @@
+---
+
+- hosts: all,!localhost
+  remote_user: root
+  tasks:
+    - name: Install bridge Utils
+      yum:
+        name: 
+          - bridge-utils
+
+- import_playbook: bridge_em1.yml 
+
+- import_playbook: bridge_bond1.yml
+
+- import_playbook: bridge_bond2.yml
+
+- hosts: all,!localhost
+  remote_user: root
+  tasks:
+    - name: Restart network
+      shell: sleep 2 && service network restart
+      async: 1
+      poll: 0
+                            
